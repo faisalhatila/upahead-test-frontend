@@ -17,24 +17,24 @@ console.log({
   databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || "https://demo-project-default-rtdb.firebaseio.com"
 })
 
-// For testing - replace with your actual Firebase config from Firebase Console
+// Replace these with your actual Firebase config from Firebase Console
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "YOUR_ACTUAL_API_KEY_HERE",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyBxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", // Replace with your actual API key
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "upahead-test.firebaseapp.com",
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "upahead-test",
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "upahead-test.appspot.com",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "YOUR_ACTUAL_SENDER_ID_HERE",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "YOUR_ACTUAL_APP_ID_HERE",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "123456789012", // Replace with your actual sender ID
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:123456789012:web:abcdef1234567890", // Replace with your actual app ID
   databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || "https://upahead-test-default-rtdb.firebaseio.com"
 };
 
 // Check if Firebase config is properly set up
 const isFirebaseConfigured = () => {
-  return firebaseConfig.apiKey !== "YOUR_ACTUAL_API_KEY_HERE" && 
+  return firebaseConfig.apiKey !== "AIzaSyBxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" && 
          firebaseConfig.apiKey.length > 20 &&
          firebaseConfig.projectId.length > 5 &&
-         firebaseConfig.messagingSenderId !== "YOUR_ACTUAL_SENDER_ID_HERE" &&
-         firebaseConfig.appId !== "YOUR_ACTUAL_APP_ID_HERE";
+         firebaseConfig.messagingSenderId !== "123456789012" &&
+         firebaseConfig.appId !== "1:123456789012:web:abcdef1234567890";
 };
 
 // Initialize Firebase with error handling

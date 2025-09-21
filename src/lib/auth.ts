@@ -24,14 +24,7 @@ const mapFirebaseUser = (firebaseUser: FirebaseUser): User => ({
 // Sign in with Google
 export const signInWithGoogle = async (): Promise<User> => {
   if (!auth || !googleProvider) {
-    // Demo mode - return a mock user
-    const mockUser: User = {
-      uid: 'demo_user_' + Math.random().toString(36).substr(2, 9),
-      email: 'demo@example.com',
-      displayName: 'Demo User',
-      photoURL: 'https://api.dicebear.com/7.x/avataaars/svg?seed=demo&backgroundColor=b6e3f4'
-    };
-    return mockUser;
+    throw new Error('Firebase not configured. Please check your setup.');
   }
 
   try {
