@@ -6,9 +6,10 @@ interface CustomCalendarProps {
   selected?: Date;
   onSelect?: (date: Date) => void;
   className?: string;
+  disabled?: (date: Date) => boolean;
 }
 
-export function CustomCalendar({ selected, onSelect, className }: CustomCalendarProps) {
+export function CustomCalendar({ selected, onSelect, className, disabled }: CustomCalendarProps) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   const today = new Date();
@@ -102,17 +103,20 @@ export function CustomCalendar({ selected, onSelect, className }: CustomCalendar
 
           const isTodayDate = isToday(date);
           const isSelectedDate = isSelected(date);
+          const isDisabled = disabled ? disabled(date) : false;
 
           return (
             <button
               key={index}
-              onClick={() => handleDateClick(date)}
+              onClick={() => !isDisabled && handleDateClick(date)}
+              disabled={isDisabled}
               className={cn(
                 "h-10 w-10 text-sm font-medium rounded-md transition-all duration-200 flex items-center justify-center",
-                "hover:bg-blue-50 hover:text-blue-600",
-                isTodayDate && !isSelectedDate && "bg-orange-100 text-orange-700 border border-orange-200 font-semibold",
+                isDisabled && "opacity-50 cursor-not-allowed text-gray-400",
+                !isDisabled && "hover:bg-blue-50 hover:text-blue-600",
+                isTodayDate && !isSelectedDate && !isDisabled && "bg-orange-100 text-orange-700 border border-orange-200 font-semibold",
                 isSelectedDate && "bg-blue-600 text-green shadow-md font-semibold hover:bg-blue-700",
-                !isTodayDate && !isSelectedDate && "text-gray-700 hover:bg-gray-100"
+                !isTodayDate && !isSelectedDate && !isDisabled && "text-gray-700 hover:bg-gray-100"
               )}
             >
               {date.getDate()}
