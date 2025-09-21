@@ -2,7 +2,9 @@ import { createContext, useContext, ReactNode, useState } from 'react';
 
 interface TaskFocusContextType {
   focusTaskInput: () => void;
+  focusTaskInputWithAI: () => void;
   isTaskInputFocused: boolean;
+  isAIModeRequested: boolean;
 }
 
 const TaskFocusContext = createContext<TaskFocusContextType | null>(null);
@@ -13,16 +15,33 @@ interface TaskFocusProviderProps {
 
 export function TaskFocusProvider({ children }: TaskFocusProviderProps) {
   const [isTaskInputFocused, setIsTaskInputFocused] = useState(false);
+  const [isAIModeRequested, setIsAIModeRequested] = useState(false);
 
   const focusTaskInput = () => {
     setIsTaskInputFocused(true);
+    setIsAIModeRequested(false);
     // Reset after a short delay to allow for re-triggering
-    setTimeout(() => setIsTaskInputFocused(false), 100);
+    setTimeout(() => {
+      setIsTaskInputFocused(false);
+      setIsAIModeRequested(false);
+    }, 100);
+  };
+
+  const focusTaskInputWithAI = () => {
+    setIsTaskInputFocused(true);
+    setIsAIModeRequested(true);
+    // Reset after a short delay to allow for re-triggering
+    setTimeout(() => {
+      setIsTaskInputFocused(false);
+      setIsAIModeRequested(false);
+    }, 100);
   };
 
   const value = {
     focusTaskInput,
+    focusTaskInputWithAI,
     isTaskInputFocused,
+    isAIModeRequested,
   };
 
   return (

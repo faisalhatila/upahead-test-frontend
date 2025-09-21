@@ -24,7 +24,7 @@ export function QuickAddTask() {
   const [aiUsage, setAiUsage] = useState({ attempts: 0, remaining: 3, isBlocked: false });
   const inputRef = useRef<HTMLInputElement>(null);
   const { addTask, refreshTasks } = useTaskStore();
-  const { isTaskInputFocused } = useTaskFocus();
+  const { isTaskInputFocused, isAIModeRequested } = useTaskFocus();
 
 
   useEffect(() => {
@@ -37,6 +37,12 @@ export function QuickAddTask() {
   useEffect(() => {
     if (isTaskInputFocused) {
       setIsExpanded(true);
+      
+      // Set AI mode if requested
+      if (isAIModeRequested) {
+        setIsAIMode(true);
+      }
+      
       // Focus the input after a short delay to ensure smooth animation
       setTimeout(() => {
         if (inputRef.current) {
@@ -44,7 +50,7 @@ export function QuickAddTask() {
         }
       }, 150);
     }
-  }, [isTaskInputFocused]);
+  }, [isTaskInputFocused, isAIModeRequested]);
 
   // Load AI usage info on mount
   useEffect(() => {

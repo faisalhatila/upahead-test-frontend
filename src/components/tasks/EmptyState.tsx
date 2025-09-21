@@ -3,7 +3,7 @@ import { CheckSquare, Plus, Sparkles } from 'lucide-react';
 import { useTaskFocus } from './TaskFocusContext';
 
 export function EmptyState() {
-  const { focusTaskInput } = useTaskFocus();
+  const { focusTaskInput, focusTaskInputWithAI } = useTaskFocus();
   return (
     <div className="text-center py-16">
       <div className="w-24 h-24 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -30,7 +30,12 @@ export function EmptyState() {
           Create your first task
         </Button>
         
-        <Button variant="outline" size="lg" className="gap-2">
+        <Button 
+          variant="outline" 
+          size="lg" 
+          className="gap-2"
+          onClick={focusTaskInputWithAI}
+        >
           <Sparkles className="w-5 h-5" />
           Explore AI features
         </Button>
