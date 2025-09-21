@@ -106,7 +106,7 @@ export function TaskList({ defaultFilter = 'all' }: TaskListProps = {}) {
 
         <div className="flex items-center gap-2">
           {/* Filter Buttons - Commented out for now */}
-          {/* <div className="flex items-center bg-gray-100 rounded-lg p-1">
+          <div className="flex items-center bg-gray-100 rounded-lg p-1">
             {(['all', 'active', 'completed'] as FilterType[]).map((filterType) => (
               <Button
                 key={filterType}
@@ -118,7 +118,7 @@ export function TaskList({ defaultFilter = 'all' }: TaskListProps = {}) {
                 {filterType.charAt(0).toUpperCase() + filterType.slice(1)}
               </Button>
             ))}
-          </div> */}
+          </div>
 
           {/* Sort Options */}
           <div className="flex items-center bg-gray-100 rounded-lg p-1">

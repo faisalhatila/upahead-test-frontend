@@ -5,6 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useTaskStore } from '@/stores/taskStore';
 import { useTaskFocus } from './TaskFocusContext';
+import { aiTaskService } from '@/lib/api';
 import { Plus, Calendar as CalendarIcon, Tag, Sparkles, Star, BookOpen, Bot, PenTool } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -24,8 +25,9 @@ export function QuickAddTask() {
   const [isAIMode, setIsAIMode] = useState(false);
   const [aiPrompt, setAiPrompt] = useState('');
   const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [aiUsage, setAiUsage] = useState({ attempts: 0, remaining: 3, isBlocked: false });
   const inputRef = useRef<HTMLInputElement>(null);
-  const { addTask } = useTaskStore();
+  const { addTask, refreshTasks } = useTaskStore();
   const { isTaskInputFocused } = useTaskFocus();
 
   // Predefined subject options - Engineering, Medical, Commerce focused
@@ -102,6 +104,22 @@ export function QuickAddTask() {
     }
   }, [isTaskInputFocused]);
 
+  // Load AI usage info on mount
+  useEffect(() => {
+    const loadAIUsage = async () => {
+      try {
+        const usage = await aiTaskService.getUsageInfo();
+        setAiUsage(usage);
+      } catch (error) {
+        console.error('Error loading AI usage:', error);
+        // Fallback to default values
+        setAiUsage({ attempts: 0, remaining: 3, isBlocked: false });
+      }
+    };
+    
+    loadAIUsage();
+  }, []);
+
   // Validation functions
   const validateForm = () => {
     const newErrors: {[key: string]: string} = {};
@@ -151,19 +169,62 @@ export function QuickAddTask() {
       
       setIsLoading(true);
       try {
-        // TODO: Replace with actual API call to your backend
-        console.log('AI Prompt:', aiPrompt);
-        toast.info('AI task creation feature coming soon!');
+        console.log('Creating tasks with AI prompt:', aiPrompt);
         
-        // For now, just show a placeholder
-        // await createTaskFromAI(aiPrompt);
+        const result = await aiTaskService.createTasksFromPrompt(aiPrompt);
         
-        setAiPrompt('');
-        setIsAIMode(false);
-        setIsExpanded(false);
+        if (result.success) {
+          const successMessage = result.remainingAttempts !== undefined 
+            ? `${result.message || 'Tasks created successfully with AI!'} (${result.remainingAttempts} attempts remaining)`
+            : result.message || 'Tasks created successfully with AI!';
+          
+          toast.success(successMessage);
+          
+          // Update AI usage state
+          const updatedUsage = await aiTaskService.getUsageInfo();
+          setAiUsage(updatedUsage);
+          
+          // Refresh the task list to show newly created tasks
+          await refreshTasks();
+          
+          setAiPrompt('');
+          setIsAIMode(false);
+          setIsExpanded(false);
+        } else {
+          toast.error(result.message || 'Failed to create tasks with AI.');
+        }
       } catch (error) {
         console.error('Error creating task with AI:', error);
-        toast.error('Failed to create task with AI. Please try again.');
+        
+        const errorMessage = error instanceof Error ? error.message : 'Failed to create task with AI. Please try again.';
+        
+        // Show different toast styles based on error type
+        if (errorMessage.includes('Authentication failed')) {
+          toast.error(errorMessage, {
+            description: 'Please sign out and sign in again.',
+            duration: 5000
+          });
+        } else if (errorMessage.includes('Could not understand')) {
+          toast.error(errorMessage, {
+            description: 'Try rephrasing your request with more specific details.',
+            duration: 6000
+          });
+        } else if (errorMessage.includes('temporarily unavailable')) {
+          toast.error(errorMessage, {
+            description: 'The AI service is being configured. Please try again in a few minutes.',
+            duration: 5000
+          });
+        } else if (errorMessage.includes('limit reached')) {
+          toast.error(errorMessage, {
+            description: 'You can still create tasks manually.',
+            duration: 5000
+          });
+          // Update AI usage state to reflect the limit
+          const updatedUsage = await aiTaskService.getUsageInfo();
+          setAiUsage(updatedUsage);
+        } else {
+          toast.error(errorMessage);
+        }
       } finally {
         setIsLoading(false);
       }
@@ -346,22 +407,24 @@ export function QuickAddTask() {
                       variant={isAIMode ? "secondary" : "ghost"}
                       size="sm"
                       onClick={() => setIsAIMode(true)}
+                      disabled={aiUsage.isBlocked}
                       className={cn(
                         "flex items-center gap-1 text-xs",
-                        isAIMode ? "bg-white shadow-sm" : "hover:bg-gray-200"
+                        isAIMode ? "bg-white shadow-sm" : "hover:bg-gray-200",
+                        aiUsage.isBlocked && "opacity-50 cursor-not-allowed"
                       )}
                     >
                       <Bot className="w-3 h-3" />
-                      AI
+                      AI {aiUsage.isBlocked ? "(Limit Reached)" : `(${aiUsage.remaining} left)`}
                     </Button>
                   </div>
                 </div>
                 {isAIMode && <Button
                   type="submit"
-                  disabled={isLoading || (!isAIMode && !title.trim()) || (isAIMode && !aiPrompt.trim())}
+                  disabled={isLoading || !aiPrompt.trim() || aiUsage.isBlocked}
                   className="text-xs"
                 >
-                  {isLoading ? 'Creating...' : isAIMode ? 'Create with AI' : 'Create Task'}
+                  {isLoading ? 'Creating...' : aiUsage.isBlocked ? 'Limit Reached' : 'Create with AI'}
                 </Button>}
               </div>
             </div>
@@ -380,9 +443,26 @@ export function QuickAddTask() {
                   className="w-full text-body-sm text-gray-700 placeholder:text-gray-400 bg-transparent outline-none resize-none border border-gray-200 rounded-lg p-3"
                   rows={3}
                 />
-                <p className="text-xs text-gray-500">
-                  💡 Be specific about deadlines, subjects, and priorities for better results
-                </p>
+                <div className="space-y-1">
+                  <p className="text-xs text-gray-500">
+                    💡 Be specific about deadlines, subjects, and priorities for better results
+                  </p>
+                  <div className="text-xs text-gray-400">
+                    <p><strong>Good examples:</strong></p>
+                    <ul className="list-disc list-inside ml-2 space-y-0.5">
+                      <li>"Create 5 tasks for React.js learning with weekly deadlines"</li>
+                      <li>"Plan a 2-week project for building a todo app with daily milestones"</li>
+                      <li>"Generate study tasks for calculus exam in 3 weeks"</li>
+                    </ul>
+                  </div>
+                </div>
+                {aiUsage.isBlocked && (
+                  <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded-md">
+                    <p className="text-xs text-red-600">
+                      ⚠️ AI task creation limit reached. You have used all 3 attempts. Please try again tomorrow.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           )}
