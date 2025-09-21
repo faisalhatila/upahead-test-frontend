@@ -2,11 +2,10 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { CustomCalendar } from '@/components/ui/custom-calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useTaskStore } from '@/stores/taskStore';
 import { useTaskFocus } from './TaskFocusContext';
 import { aiTaskService } from '@/lib/api';
-import { Plus, Calendar as CalendarIcon, Tag, Sparkles, Star, BookOpen, Bot, PenTool } from 'lucide-react';
+import { Plus, Calendar as CalendarIcon, Tag, Sparkles, Star, Bot, PenTool } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
@@ -19,9 +18,6 @@ export function QuickAddTask() {
   const [issueDate, setIssueDate] = useState<Date>(new Date());
   const [important, setImportant] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [subject, setSubject] = useState('');
-  const [customSubject, setCustomSubject] = useState('');
-  const [showCustomSubject, setShowCustomSubject] = useState(false);
   const [isAIMode, setIsAIMode] = useState(false);
   const [aiPrompt, setAiPrompt] = useState('');
   const [errors, setErrors] = useState<{[key: string]: string}>({});
@@ -30,60 +26,6 @@ export function QuickAddTask() {
   const { addTask, refreshTasks } = useTaskStore();
   const { isTaskInputFocused } = useTaskFocus();
 
-  // Predefined subject options - Engineering, Medical, Commerce focused
-  const subjectOptions = [
-    // Software Engineering
-    'Software Development',
-    'Web Development',
-    'Mobile Development',
-    'DevOps',
-    'Data Science',
-    'Machine Learning',
-    'Cybersecurity',
-    'Database Design',
-    'System Architecture',
-    'Code Review',
-    
-    // Other Engineering
-    'Mechanical Engineering',
-    'Electrical Engineering',
-    'Civil Engineering',
-    'Chemical Engineering',
-    'Biomedical Engineering',
-    'Aerospace Engineering',
-    'Environmental Engineering',
-    
-    // Medical Science
-    'Anatomy',
-    'Physiology',
-    'Pathology',
-    'Pharmacology',
-    'Surgery',
-    'Internal Medicine',
-    'Pediatrics',
-    'Radiology',
-    'Laboratory Work',
-    'Clinical Research',
-    
-    // Commerce & Business
-    'Accounting',
-    'Finance',
-    'Marketing',
-    'Economics',
-    'Business Analysis',
-    'Project Management',
-    'Supply Chain',
-    'Human Resources',
-    'Operations',
-    'Strategy',
-    
-    // General
-    'Research',
-    'Documentation',
-    'Presentation',
-    'Meeting',
-    'Other'
-  ];
 
   useEffect(() => {
     if (isExpanded && inputRef.current) {
@@ -128,9 +70,6 @@ export function QuickAddTask() {
       newErrors.title = 'Title is required';
     }
 
-    if (!subject) {
-      newErrors.subject = 'Subject is required';
-    }
 
     if (!issueDate) {
       newErrors.issueDate = 'Issue date is required';
@@ -240,8 +179,6 @@ export function QuickAddTask() {
     setIsLoading(true);
     
     try {
-      const finalSubject = subject === 'Other' ? customSubject.trim() : subject;
-      
       await addTask({
         title: title.trim(),
         description: description.trim() || undefined,
@@ -249,7 +186,6 @@ export function QuickAddTask() {
         issueDate: issueDate.getTime(),
         important,
         completed: false,
-        subject: finalSubject || undefined,
         tags: [],
       });
 
@@ -262,9 +198,6 @@ export function QuickAddTask() {
       setDueDate(undefined);
       setIssueDate(new Date());
       setImportant(false);
-      setSubject('');
-      setCustomSubject('');
-      setShowCustomSubject(false);
       setIsExpanded(false);
       setErrors({});
     } catch (error) {
@@ -283,9 +216,6 @@ export function QuickAddTask() {
       setDueDate(undefined);
       setIssueDate(new Date());
       setImportant(false);
-      setSubject('');
-      setCustomSubject('');
-      setShowCustomSubject(false);
       setIsAIMode(false);
       setAiPrompt('');
       setErrors({});
@@ -295,16 +225,6 @@ export function QuickAddTask() {
     }
   };
 
-  const handleSubjectChange = (value: string) => {
-    setSubject(value);
-    clearError('subject');
-    if (value === 'Other') {
-      setShowCustomSubject(true);
-    } else {
-      setShowCustomSubject(false);
-      setCustomSubject('');
-    }
-  };
 
   const handleIssueDateChange = (date: Date | undefined) => {
     if (date) {
@@ -480,44 +400,6 @@ export function QuickAddTask() {
                 rows={2}
               />
 
-              {/* Subject Field */}
-              <div>
-                <label className="text-xs text-gray-500 mb-1 block">Subject *</label>
-                <Select value={subject} onValueChange={handleSubjectChange}>
-                  <SelectTrigger className={cn(
-                    "w-full",
-                    errors.subject && "border-red-500"
-                  )}>
-                    <SelectValue placeholder="Select a subject" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white border border-gray-200 shadow-lg">
-                    {subjectOptions.map((option) => (
-                      <SelectItem key={option} value={option} className="bg-white hover:bg-gray-50">
-                        <div className="flex items-center gap-2">
-                          <BookOpen className="w-4 h-4" />
-                          {option}
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors.subject && (
-                  <p className="text-xs text-red-500 mt-1">{errors.subject}</p>
-                )}
-                
-                {/* Custom Subject Input */}
-                {showCustomSubject && (
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      placeholder="Enter custom subject..."
-                      value={customSubject}
-                      onChange={(e) => setCustomSubject(e.target.value)}
-                      className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    />
-                  </div>
-                )}
-              </div>
 
               {/* Date Fields */}
               <div className="grid grid-cols-2 gap-3">
@@ -644,7 +526,7 @@ export function QuickAddTask() {
                     type="submit"
                     variant="primary"
                     size="sm"
-                    disabled={!title.trim() || !subject || !issueDate || !dueDate || isLoading}
+                    disabled={!title.trim() || !issueDate || !dueDate || isLoading}
                     className="min-w-16"
                   >
                     {isLoading ? (

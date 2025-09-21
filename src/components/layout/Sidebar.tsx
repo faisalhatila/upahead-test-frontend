@@ -20,9 +20,9 @@ interface SidebarProps {
 
 const navigation = [
   { name: 'Today', icon: Home, href: '/', current: true, count: 3 },
-  { name: 'Upcoming', icon: Calendar, href: '/upcoming', current: false, count: 7 },
-  { name: 'Important', icon: Star, href: '/important', current: false, count: 2 },
-  { name: 'Completed', icon: CheckSquare, href: '/completed', current: false, count: 12 },
+  // { name: 'Upcoming', icon: Calendar, href: '/upcoming', current: false, count: 7 },
+  // { name: 'Important', icon: Star, href: '/important', current: false, count: 2 },
+  // { name: 'Completed', icon: CheckSquare, href: '/completed', current: false, count: 12 },
 ];
 
 const filters = [
@@ -121,14 +121,16 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
                 {filters.map((item) => {
                   const Icon = item.icon;
                   return (
-                    <a
+                    <Button
                       key={item.name}
-                      href={item.href}
+                      variant='outline'
+                      // href={item.href}
                       className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                      disabled
                     >
                       <Icon className={cn("w-4 h-4", item.color)} />
                       <span>{item.name}</span>
-                    </a>
+                    </Button>
                   );
                 })}
               </nav>
