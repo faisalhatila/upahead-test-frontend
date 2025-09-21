@@ -17,22 +17,24 @@ console.log({
   databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || "https://demo-project-default-rtdb.firebaseio.com"
 })
 
+// For testing - replace with your actual Firebase config from Firebase Console
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "demo-api-key",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "demo-project.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "demo-project-id",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "demo-project.appspot.com",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "123456789",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "demo-app-id",
-  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || "https://demo-project-default-rtdb.firebaseio.com"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "YOUR_ACTUAL_API_KEY_HERE",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "upahead-test.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "upahead-test",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "upahead-test.appspot.com",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "YOUR_ACTUAL_SENDER_ID_HERE",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "YOUR_ACTUAL_APP_ID_HERE",
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || "https://upahead-test-default-rtdb.firebaseio.com"
 };
 
 // Check if Firebase config is properly set up
 const isFirebaseConfigured = () => {
-  return firebaseConfig.apiKey !== "demo-api-key" && 
-         firebaseConfig.projectId !== "demo-project-id" &&
-         firebaseConfig.apiKey.length > 10 &&
-         firebaseConfig.projectId.length > 5;
+  return firebaseConfig.apiKey !== "YOUR_ACTUAL_API_KEY_HERE" && 
+         firebaseConfig.apiKey.length > 20 &&
+         firebaseConfig.projectId.length > 5 &&
+         firebaseConfig.messagingSenderId !== "YOUR_ACTUAL_SENDER_ID_HERE" &&
+         firebaseConfig.appId !== "YOUR_ACTUAL_APP_ID_HERE";
 };
 
 // Initialize Firebase with error handling
@@ -46,7 +48,17 @@ try {
   console.log('Firebase config check:', {
     apiKey: firebaseConfig.apiKey.substring(0, 10) + '...',
     projectId: firebaseConfig.projectId,
-    isConfigured: isFirebaseConfigured()
+    authDomain: firebaseConfig.authDomain,
+    messagingSenderId: firebaseConfig.messagingSenderId,
+    appId: firebaseConfig.appId.substring(0, 20) + '...',
+    isConfigured: isFirebaseConfigured(),
+    envVars: {
+      hasApiKey: !!import.meta.env.VITE_FIREBASE_API_KEY,
+      hasProjectId: !!import.meta.env.VITE_FIREBASE_PROJECT_ID,
+      hasAuthDomain: !!import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+      hasMessagingSenderId: !!import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+      hasAppId: !!import.meta.env.VITE_FIREBASE_APP_ID
+    }
   });
   
   if (isFirebaseConfigured()) {
