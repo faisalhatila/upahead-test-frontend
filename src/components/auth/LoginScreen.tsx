@@ -24,6 +24,15 @@ export function LoginScreen({ onLogin }: LoginScreenProps = {}) {
       
       // Check if it's a Firebase configuration error
       if (error instanceof Error && error.message.includes('Firebase')) {
+        console.log({
+          apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "demo-api-key",
+          authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "demo-project.firebaseapp.com",
+          projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "demo-project-id",
+          storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "demo-project.appspot.com",
+          messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "123456789",
+          appId: import.meta.env.VITE_FIREBASE_APP_ID || "demo-app-id",
+          databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || "https://demo-project-default-rtdb.firebaseio.com"
+        })
         toast.error('Firebase not configured. Please check your setup.');
       } else {
         toast.error('Failed to sign in. Please try again.');
