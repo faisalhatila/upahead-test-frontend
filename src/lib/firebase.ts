@@ -19,11 +19,14 @@ const firebaseConfig = {
 
 // Check if Firebase config is properly set up
 const isFirebaseConfigured = () => {
-  return firebaseConfig.apiKey !== "AIzaSyBxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" && 
-         firebaseConfig.apiKey.length > 20 &&
-         firebaseConfig.projectId.length > 5 &&
-         firebaseConfig.messagingSenderId !== "123456789012" &&
-         firebaseConfig.appId !== "1:123456789012:web:abcdef1234567890";
+  // Check if we have environment variables set (production) or valid config values
+  const hasEnvVars = !!import.meta.env.VITE_FIREBASE_API_KEY;
+  const hasValidApiKey = firebaseConfig.apiKey && firebaseConfig.apiKey.length > 20 && !firebaseConfig.apiKey.includes('xxxxx');
+  const hasValidProjectId = firebaseConfig.projectId && firebaseConfig.projectId.length > 5;
+  const hasValidSenderId = firebaseConfig.messagingSenderId && firebaseConfig.messagingSenderId.length > 5;
+  const hasValidAppId = firebaseConfig.appId && firebaseConfig.appId.length > 10;
+  
+  return (hasEnvVars || hasValidApiKey) && hasValidProjectId && hasValidSenderId && hasValidAppId;
 };
 
 // Initialize Firebase with error handling
@@ -34,7 +37,7 @@ let db;
 let realtimeDb;
 
 try {
-  console.log('Firebase config check:', {
+  const configCheck = {
     apiKey: firebaseConfig.apiKey.substring(0, 10) + '...',
     projectId: firebaseConfig.projectId,
     authDomain: firebaseConfig.authDomain,
@@ -47,11 +50,21 @@ try {
       hasAuthDomain: !!import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
       hasMessagingSenderId: !!import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
       hasAppId: !!import.meta.env.VITE_FIREBASE_APP_ID
+    },
+    validation: {
+      hasEnvVars: !!import.meta.env.VITE_FIREBASE_API_KEY,
+      hasValidApiKey: firebaseConfig.apiKey && firebaseConfig.apiKey.length > 20 && !firebaseConfig.apiKey.includes('xxxxx'),
+      hasValidProjectId: firebaseConfig.projectId && firebaseConfig.projectId.length > 5,
+      hasValidSenderId: firebaseConfig.messagingSenderId && firebaseConfig.messagingSenderId.length > 5,
+      hasValidAppId: firebaseConfig.appId && firebaseConfig.appId.length > 10
     }
-  });
+  };
   
-  if (isFirebaseConfigured()) {
-    console.log('Initializing Firebase with real config...');
+  console.log('Firebase config check:', configCheck);
+  
+  // Always try to initialize Firebase if we have environment variables
+  if (import.meta.env.VITE_FIREBASE_API_KEY || isFirebaseConfigured()) {
+    console.log('Initializing Firebase with config...');
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
     googleProvider = new GoogleAuthProvider();
