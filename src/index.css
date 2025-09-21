@@ -1,0 +1,551 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Task Manager Design System - Modern, Minimal, Delightful */
+
+/* Custom Animations */
+@keyframes task-input-expand {
+  from {
+    transform: scale(1);
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  }
+  to {
+    transform: scale(1.02);
+    box-shadow: 0 10px 25px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
+  }
+}
+
+@keyframes task-input-collapse {
+  from {
+    transform: scale(1.02);
+    box-shadow: 0 10px 25px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
+  }
+  to {
+    transform: scale(1);
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  }
+}
+
+@keyframes slide-in-from-top {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.task-input-expanded {
+  animation: task-input-expand 0.3s ease-out forwards;
+}
+
+.task-input-collapsed {
+  animation: task-input-collapse 0.3s ease-out forwards;
+}
+
+.task-expand-content {
+  animation: slide-in-from-top 0.3s ease-out forwards;
+}
+
+/* Date Picker and Select Dropdown Styling */
+[data-radix-popper-content-wrapper] {
+  z-index: 50;
+}
+
+[data-radix-popper-content-wrapper] .bg-white {
+  background-color: white !important;
+  opacity: 1 !important;
+}
+
+/* Select Dropdown Styling */
+[data-radix-select-content] {
+  background-color: white !important;
+  opacity: 1 !important;
+  border: 1px solid hsl(var(--gray-200)) !important;
+  box-shadow: 0 10px 25px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05) !important;
+  z-index: 50 !important;
+}
+
+[data-radix-select-viewport] {
+  background-color: white !important;
+  opacity: 1 !important;
+}
+
+[data-radix-select-item] {
+  background-color: white !important;
+  color: hsl(var(--gray-900)) !important;
+  opacity: 1 !important;
+}
+
+[data-radix-select-item]:hover {
+  background-color: hsl(var(--gray-50)) !important;
+  opacity: 1 !important;
+}
+
+[data-radix-select-item][data-highlighted] {
+  background-color: hsl(var(--primary) / 0.1) !important;
+  color: hsl(var(--primary)) !important;
+  opacity: 1 !important;
+}
+
+[data-radix-select-item][data-state="checked"] {
+  background-color: hsl(var(--primary) / 0.1) !important;
+  color: hsl(var(--primary)) !important;
+  opacity: 1 !important;
+}
+
+/* Additional selectors for different Radix versions */
+[role="listbox"] {
+  background-color: white !important;
+  opacity: 1 !important;
+}
+
+[role="option"] {
+  background-color: white !important;
+  color: hsl(var(--gray-900)) !important;
+  opacity: 1 !important;
+}
+
+[role="option"]:hover {
+  background-color: hsl(var(--gray-50)) !important;
+  opacity: 1 !important;
+}
+
+/* Force all select dropdowns to be opaque */
+[data-radix-popper-content-wrapper] [data-radix-select-content],
+[data-radix-popper-content-wrapper] [data-radix-select-viewport],
+[data-radix-popper-content-wrapper] [data-radix-select-item],
+[data-radix-popper-content-wrapper] [role="listbox"],
+[data-radix-popper-content-wrapper] [role="option"] {
+  background-color: white !important;
+  opacity: 1 !important;
+  color: hsl(var(--gray-900)) !important;
+}
+
+/* Ensure the popover content itself is opaque */
+[data-radix-popper-content-wrapper] {
+  background-color: white !important;
+  opacity: 1 !important;
+}
+
+/* Target any element with select-related classes */
+.select-content,
+.select-viewport,
+.select-item {
+  background-color: white !important;
+  opacity: 1 !important;
+}
+
+/* Nuclear option - target all possible select dropdown elements */
+*[data-radix-select-content],
+*[data-radix-select-viewport],
+*[data-radix-select-item],
+*[role="listbox"],
+*[role="option"],
+*[class*="select-content"],
+*[class*="select-viewport"],
+*[class*="select-item"] {
+  background-color: white !important;
+  opacity: 1 !important;
+  color: hsl(var(--gray-900)) !important;
+}
+
+/* Ensure no transparency on any dropdown */
+[data-state="open"] * {
+  opacity: 1 !important;
+}
+
+/* Force white background on all popover content */
+[data-radix-popper-content-wrapper] * {
+  background-color: white !important;
+  opacity: 1 !important;
+}
+
+/* Calendar Styling - React Day Picker */
+.rdp {
+  --rdp-cell-size: 40px;
+  --rdp-accent-color: hsl(var(--primary));
+  --rdp-background-color: white;
+  --rdp-accent-color-dark: hsl(var(--primary));
+  --rdp-background-color-dark: white;
+  --rdp-outline: 2px solid hsl(var(--primary));
+  --rdp-outline-selected: 2px solid hsl(var(--primary));
+  margin: 0;
+}
+
+/* Custom Calendar Styling - Clean and Professional */
+
+/* Ensure calendar popover has proper background */
+[data-radix-popper-content-wrapper] .rdp {
+  background-color: white !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+}
+
+/* Additional calendar styling */
+.rdp-day {
+  color: hsl(var(--foreground)) !important;
+}
+
+/* Force text color for all calendar elements */
+.rdp .day {
+  color: hsl(var(--foreground)) !important;
+}
+
+.rdp .day_selected {
+  background-color: hsl(var(--primary)) !important;
+  color: white !important;
+}
+
+.rdp .day_selected:hover {
+  background-color: hsl(var(--primary-hover)) !important;
+  color: white !important;
+}
+
+/* Custom Calendar - No complex overrides needed */
+
+/* Custom Calendar - Clean implementation */
+
+@layer base {
+  :root {
+    /* Core Background & Surface Colors */
+    --background: 0 0% 98%;
+    --surface: 0 0% 100%;
+    --surface-elevated: 0 0% 100%;
+    --foreground: 220 13% 18%;
+    
+    /* Primary - Indigo */
+    --primary: 239 84% 67%;
+    --primary-hover: 239 84% 62%;
+    --primary-active: 239 84% 57%;
+    --primary-foreground: 0 0% 100%;
+    --primary-muted: 239 84% 67% / 0.1;
+    
+    /* Accent - Teal */
+    --accent: 173 80% 40%;
+    --accent-hover: 173 80% 35%;
+    --accent-active: 173 80% 30%;
+    --accent-foreground: 0 0% 100%;
+    --accent-muted: 173 80% 40% / 0.1;
+    
+    /* CTA - Warm Amber */
+    --cta: 43 96% 56%;
+    --cta-hover: 43 96% 51%;
+    --cta-active: 43 96% 46%;
+    --cta-foreground: 25 35% 15%;
+    --cta-muted: 43 96% 56% / 0.1;
+    
+    /* Neutral Grays */
+    --gray-50: 220 14% 96%;
+    --gray-100: 220 14% 93%;
+    --gray-200: 220 13% 87%;
+    --gray-300: 220 9% 78%;
+    --gray-400: 220 9% 60%;
+    --gray-500: 220 9% 46%;
+    --gray-600: 220 12% 35%;
+    --gray-700: 220 13% 24%;
+    --gray-800: 220 13% 18%;
+    --gray-900: 220 13% 9%;
+    
+    /* Semantic Colors */
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    --success-muted: 142 71% 45% / 0.1;
+    
+    --warning: 38 92% 50%;
+    --warning-foreground: 25 35% 15%;
+    --warning-muted: 38 92% 50% / 0.1;
+    
+    --error: 0 84% 60%;
+    --error-foreground: 0 0% 100%;
+    --error-muted: 0 84% 60% / 0.1;
+    
+    /* UI Elements */
+    --border: 220 13% 87%;
+    --border-muted: 220 14% 93%;
+    --input: 220 14% 96%;
+    --ring: 239 84% 67%;
+    
+    /* Shadows */
+    --shadow-subtle: 0 1px 2px 0 hsl(220 13% 9% / 0.05);
+    --shadow-soft: 0 4px 6px -1px hsl(220 13% 9% / 0.1), 0 2px 4px -1px hsl(220 13% 9% / 0.06);
+    --shadow-medium: 0 10px 15px -3px hsl(220 13% 9% / 0.1), 0 4px 6px -2px hsl(220 13% 9% / 0.05);
+    --shadow-large: 0 20px 25px -5px hsl(220 13% 9% / 0.1), 0 10px 10px -5px hsl(220 13% 9% / 0.04);
+    
+    /* Animation Tokens */
+    --transition-fast: 120ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Typography Scale */
+    --text-xs: 0.75rem;    /* 12px */
+    --text-sm: 0.875rem;   /* 14px - body text */
+    --text-base: 1rem;     /* 16px - body text */
+    --text-lg: 1.125rem;   /* 18px - subheadings */
+    --text-xl: 1.25rem;    /* 20px */
+    --text-2xl: 1.5rem;    /* 24px - titles */
+    --text-3xl: 1.875rem;  /* 30px */
+    --text-4xl: 2.25rem;   /* 36px */
+    
+    /* Spacing Scale */
+    --space-1: 0.25rem;    /* 4px */
+    --space-2: 0.5rem;     /* 8px */
+    --space-3: 0.75rem;    /* 12px */
+    --space-4: 1rem;       /* 16px */
+    --space-5: 1.25rem;    /* 20px */
+    --space-6: 1.5rem;     /* 24px */
+    --space-8: 2rem;       /* 32px */
+    --space-10: 2.5rem;    /* 40px */
+    --space-12: 3rem;      /* 48px */
+    --space-16: 4rem;      /* 64px */
+    
+    /* Border Radius */
+    --radius-sm: 0.375rem;   /* 6px */
+    --radius: 0.5rem;        /* 8px */
+    --radius-md: 0.75rem;    /* 12px */
+    --radius-lg: 1rem;       /* 16px */
+    --radius-xl: 1.5rem;     /* 24px */
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+  
+  /* Typography Classes */
+  .text-display {
+    font-size: var(--text-4xl);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  
+  .text-title {
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  
+  .text-heading {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  
+  .text-body {
+    font-size: var(--text-base);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  
+  .text-body-sm {
+    font-size: var(--text-sm);
+    font-weight: 400;
+    line-height: 1.4;
+  }
+  
+  .text-caption {
+    font-size: var(--text-xs);
+    font-weight: 500;
+    line-height: 1.3;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+}
+
+@layer components {
+  /* Task Animation Classes */
+  .task-enter {
+    animation: slideInFade var(--transition-normal) ease-out;
+  }
+  
+  .task-complete {
+    animation: completeTask var(--transition-normal) ease-out;
+  }
+  
+  .task-checkbox {
+    transition: all var(--transition-fast);
+  }
+  
+  .task-checkbox:checked {
+    animation: checkboxPop var(--transition-fast) ease-out;
+  }
+  
+  /* AI Popup Animation */
+  .ai-popup-enter {
+    animation: popupEnter var(--transition-normal) ease-out;
+  }
+  
+  .ai-popup-exit {
+    animation: popupExit var(--transition-fast) ease-in;
+  }
+  
+  /* Floating Action Button */
+  .fab {
+    box-shadow: var(--shadow-medium);
+    transition: all var(--transition-normal);
+  }
+  
+  .fab:hover {
+    box-shadow: var(--shadow-large);
+    transform: translateY(-2px);
+  }
+  
+  /* Loading Spinner */
+  .spinner {
+    animation: spin 1s linear infinite;
+  }
+  
+  /* Focus Ring */
+  .focus-ring {
+    box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  /* Shadow Utilities */
+  .shadow-subtle { box-shadow: var(--shadow-subtle); }
+  .shadow-soft { box-shadow: var(--shadow-soft); }
+  .shadow-medium { box-shadow: var(--shadow-medium); }
+  .shadow-large { box-shadow: var(--shadow-large); }
+  
+  /* Animation Utilities */
+  .transition-fast { transition: all var(--transition-fast); }
+  .transition-normal { transition: all var(--transition-normal); }
+  .transition-slow { transition: all var(--transition-slow); }
+  
+  /* Interaction States */
+  .hover-lift:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-soft);
+  }
+  
+  .hover-scale:hover {
+    transform: scale(1.02);
+  }
+  
+  .active-scale:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Keyframe Animations */
+@keyframes slideInFade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes completeTask {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+@keyframes checkboxPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@keyframes popupEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes popupExit {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
