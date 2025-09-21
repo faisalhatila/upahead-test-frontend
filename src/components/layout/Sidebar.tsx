@@ -19,7 +19,7 @@ interface SidebarProps {
 }
 
 const navigation = [
-  { name: 'Today', icon: Home, href: '/', current: true, count: 3 },
+  { name: 'Today', icon: Home, href: '/', current: true, count: 0 },
   // { name: 'Upcoming', icon: Calendar, href: '/upcoming', current: false, count: 7 },
   // { name: 'Important', icon: Star, href: '/important', current: false, count: 2 },
   // { name: 'Completed', icon: CheckSquare, href: '/completed', current: false, count: 12 },
